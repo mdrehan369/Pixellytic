@@ -1,6 +1,7 @@
 import os
 import joblib
 from sklearn.linear_model import LogisticRegression
+# from sklearn.svm import SVC
 import pywt
 import pandas as pd
 import numpy as np
@@ -59,7 +60,7 @@ class BuildModel:
                 roi_gray = gray[y: y + h, x: x + w]
                 roi_img = img[y: y + h, x: x + w]
                 eyes = self.eyeCascade.detectMultiScale(roi_gray)
-                if len(eyes) >= 2:
+                if len(eyes) >= 1:
                     w2d_img = self._w2d(roi_img, "db1", 5)
                     resized_img = cv2.resize(w2d_img, (105, 105)).astype(np.float32)
                     resized_img = resized_img.reshape(-1)
@@ -77,7 +78,7 @@ class BuildModel:
         y = X["pred"]
         X.drop(["pred"], axis=1, inplace=True)
 
-        model = LogisticRegression(solver="liblinear", dual=True, C=0.2)
+        model = LogisticRegression(dual=True, solver='liblinear', C=0.2)
         model.fit(X, y)
 
         if os.path.exists("models") is False:
@@ -101,7 +102,7 @@ class BuildModel:
                 roi_gray = gray[y: y + h, x: x + w]
                 roi_img = img[y: y + h, x: x + w]
                 eyes = self.eyeCascade.detectMultiScale(roi_gray)
-                if len(eyes) >= 2:
+                if len(eyes) >= 1:
 
                     img_w2d = self._w2d(roi_img, "db1", 5)
                     Ximg = cv2.resize(img_w2d, (105, 105)).astype(np.float32)
